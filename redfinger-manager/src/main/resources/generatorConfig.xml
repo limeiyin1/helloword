@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN" "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd" >
+<generatorConfiguration>
+	<!-- 引入配置文件 -->
+	<properties resource="system.properties" />
+	<!-- 指定数据连接驱动jar地址 -->
+	<classPathEntry
+		location="D:\Tools\postgresql-9.4-1201-jdbc41.jar" />
+
+	<!-- 一个数据库一个context -->
+	<context id="infoGuardian">
+
+	
+		<plugin type="org.mybatis.generator.plugins.CaseInsensitiveLikePlugin" />
+		<plugin type="org.mybatis.generator.plugins.SerializablePlugin" />
+		
+		<plugin type="org.mybatis.generator.plugins.AddField"/>
+		<plugin type="org.mybatis.generator.plugins.SelectOneByExample"/> 
+	<!--视图不需要生成下面的文件 -->
+ 	<!--     <plugin type="org.mybatis.generator.plugins.SelectByExampleShowField"/>
+		<plugin type="org.mybatis.generator.plugins.SelectOneByExampleShowField"/> 
+		<plugin type="org.mybatis.generator.plugins.AddCriterionIgnoreNull"/>
+		
+		
+		<plugin type="org.mybatis.generator.plugins.InsertBatch"/>
+ 		<plugin type="org.mybatis.generator.plugins.UpdateByExampleSelectiveSync"/>
+		<plugin type="org.mybatis.generator.plugins.UpdateByPrimaryKeySelectiveSync"/>
+		<plugin type="org.mybatis.generator.plugins.SelectByPrimaryKeyShowField"/> -->
+
+		<!-- 注释 -->
+		<commentGenerator>
+			<property name="suppressAllComments" value="false" /><!-- 是否取消注释 -->
+			<property name="suppressDate" value="false" /> <!-- 是否生成注释代时间戳 -->
+		</commentGenerator>
+
+		<!-- jdbc连接 -->
+		<jdbcConnection driverClass="${jdbc.driverClassName}"
+			connectionURL="jdbc:postgresql://10.100.0.254:7432/redfinger" userId="redfinger" password="redfinger" />
+
+		<!-- 类型转换 -->
+		<javaTypeResolver>
+			<!-- 是否使用bigDecimal， false可自动转化以下类型（Long, Integer, Short, etc.） -->
+			<property name="forceBigDecimals" value="false" />
+		</javaTypeResolver>
+
+		<!-- 生成实体类地址 -->
+		<javaModelGenerator targetPackage="com.redfinger.manager.common.domain"
+			targetProject="redfinger-manager">
+			<!-- 是否针对string类型的字段在set的时候进行trim调用 -->
+			<property name="trimStrings" value="true" />
+			<property name="rootClass" value="com.redfinger.manager.common.base.BaseDomain" />
+		</javaModelGenerator>
+
+		<!-- 生成mapxml文件 -->
+		<sqlMapGenerator targetPackage="com.redfinger.manager.common.mapper"
+			targetProject="redfinger-manager">
+		</sqlMapGenerator>
+
+		<!-- 生成mapxml对应client，也就是接口dao -->
+		<javaClientGenerator targetPackage="com.redfinger.manager.common.mapper"
+			targetProject="redfinger-manager" type="XMLMAPPER">
+
+		</javaClientGenerator>
+		<table tableName="view_log_activity" domainObjectName="ViewLogActivity" enableInsert="false"	enableUpdateByExample="false"	
+		enableUpdateByPrimaryKey="false"	enableDeleteByPrimaryKey="false"	enableDeleteByExample="false"></table>
+		<!-- <table tableName="rf_activity_award" domainObjectName="RfActivityAward"><generatedKey column="award_id" sqlStatement="select nextval('seq_rf_activity_award')" identity="false" type="pre"/></table> -->
+		<!-- <table tableName="rf_qixi_activity" domainObjectName="RfQixiActivity"><generatedKey column="id" sqlStatement="select nextval('SEQ_RF_QX_ACTIVITY')" identity="false" type="pre"/></table> -->
+		<!-- <table tableName="stat_work_log" domainObjectName="StatWorkLog"><generatedKey column="id" sqlStatement="select nextval('seq_work_log')" identity="false" type="pre"/></table> -->
+		<!-- tables 
+<table tableName="stat_client_visit" domainObjectName="StatClientVisit"><generatedKey column="id" sqlStatement="select nextval('seq_client_visit')" identity="false" type="pre"/></table>
+<table tableName="stat_pad_dynamic" domainObjectName="StatPadDynamic"><generatedKey column="id" sqlStatement="select nextval('seq_pad_dynamic')" identity="false" type="pre"/></table>
+<table tableName="stat_pq_records" domainObjectName="StatPqRecords"><generatedKey column="id" sqlStatement="select nextval('seq_pq_records')" identity="false" type="pre"/></table>
+<table tableName="stat_user_action" domainObjectName="StatUserAction"><generatedKey column="id" sqlStatement="select nextval('seq_user_action')" identity="false" type="pre"/></table>
+<table tableName="app_list" domainObjectName="appList"/>
+<table tableName="stat_apps_records" domainObjectName="StatAppsRecords"><generatedKey column="id" sqlStatement="select nextval('seq_apps_records')" identity="false" type="pre"/></table>
+
+<table tableName="stat_client_function" domainObjectName="StatClientFunction"/>
+<table tableName="view_new_user_trails" domainObjectName="ViewNewUserTrails" enableInsert="false" enableUpdateByExample="false" enableUpdateByPrimaryKey="false" enableDeleteByPrimaryKey="false" enableDeleteByExample="false"/>
+-->
+<!--   
+ <table tableName="stat_basic_data" domainObjectName="StatBasicData" ><generatedKey column="id" sqlStatement="select nextval('seq_stat_basic_data')"  identity="false" type="pre"/></table>
+<table tableName="stat_pay_rank" domainObjectName="StatPayRank" />
+ <table tableName="view_login_log" domainObjectName="ViewLoginLog" enableInsert="false"	enableUpdateByExample="false"	enableUpdateByPrimaryKey="false"	enableDeleteByPrimaryKey="false"	enableDeleteByExample="false"></table>
+		<table tableName="view_order_user" domainObjectName="ViewOrderUser" enableInsert="false"	enableUpdateByExample="false"	enableUpdateByPrimaryKey="false"	enableDeleteByPrimaryKey="false"	enableDeleteByExample="false"></table>
+  	
+ <table tableName="stat_client_visit" domainObjectName="StatClientVisit"><generatedKey column="id" sqlStatement="select nextval('seq_client_visit')" identity="false" type="pre"/></table>
+-->
+ </context>
+</generatorConfiguration>  

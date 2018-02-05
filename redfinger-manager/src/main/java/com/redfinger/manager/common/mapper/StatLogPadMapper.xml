@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redfinger.manager.common.mapper.StatLogPadMapper">
+	<resultMap id="BaseResultMap" type="com.redfinger.manager.modules.stat.base.StatDomain">
+		<result column="id" jdbcType="INTEGER" property="id" />
+		<result column="number" jdbcType="INTEGER" property="number" />
+		<result column="amount" jdbcType="DOUBLE" property="amount" />
+		<result column="label" jdbcType="VARCHAR" property="label" />
+	</resultMap>
+	
+	<select id="statNumber" parameterType="com.redfinger.manager.modules.stat.base.StatDomain" resultMap="BaseResultMap">
+		<![CDATA[
+			SELECT count(1) as number,to_char(date_trunc('${type}',create_time), '${formart}') as label
+			from log_pad
+			where create_time >= to_date('${begin}','yyyy-MM-DD') 
+			and create_time < (to_date('${end}','yyyy-MM-DD')+ integer '1') 
+		]]> 
+			<if test="where!=null">
+				and ${where}
+			</if>
+		<![CDATA[
+			group by label
+			order by label asc
+		]]>
+	</select>
+	
+	<select id="getBindNumberByEndDate" parameterType="java.util.Date" resultType="java.lang.Integer">
+		<![CDATA[
+			select 
+			(select count(1) from log_pad where create_time<#{0} and category='bind' group by category) 
+			-
+			(select count(1) from log_pad where create_time<#{0} and category='relieve' group by category) 
+			as number
+		]]>
+	</select>
+	
+</mapper>

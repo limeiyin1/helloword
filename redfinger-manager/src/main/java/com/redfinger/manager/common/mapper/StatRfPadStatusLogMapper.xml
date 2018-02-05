@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redfinger.manager.common.mapper.StatRfPadStatusLogMapper">
+	<resultMap id="BaseResultMap" type="com.redfinger.manager.modules.stat.base.StatDomain">
+		<result column="id" jdbcType="INTEGER" property="id" />
+		<result column="number" jdbcType="INTEGER" property="number" />
+		<result column="amount" jdbcType="DOUBLE" property="amount" />
+		<result column="label" jdbcType="VARCHAR" property="label" />
+	</resultMap>
+
+
+	<!-- 活跃设备查询 -->
+	<select id="statChippyPad" parameterType="com.redfinger.manager.modules.stat.base.StatDomain" resultMap="BaseResultMap">
+		<![CDATA[
+		SELECT
+		to_char(
+				date_trunc('day', create_time),
+				'yyyy-MM-DD'
+			) AS label,count(1) as number
+			
+		FROM
+			rf_pad_status_log
+		WHERE
+			create_time >=  to_date('${begin}','yyyy-MM-DD')
+		AND create_time < (
+			(to_date('${end}','yyyy-MM-DD')+ integer '1')
+		)
+		AND pad_status = '2'
+		]]> 
+		<![CDATA[
+			group by label,pad_code
+		]]>
+	</select>
+	
+		<select id="statPadGame" parameterType="com.redfinger.manager.modules.stat.base.StatDomain" resultMap="BaseResultMap">
+	select count(1) from (select pad_id ,count(1) from rf_pad_user_game_use t left join rf_game g on t.game_id=g.game_id where game_name like '九阴真经%' group by pad_id)ttt
+		<![CDATA[
+			SELECT count(1) as number,to_char(date_trunc('${type}',create_time), '${formart}') as label
+			from log_pad
+			where create_time >= to_date('${begin}','yyyy-MM-DD') 
+			and create_time < (to_date('${end}','yyyy-MM-DD')+ integer '1') 
+		]]> 
+			<if test="where!=null">
+				and ${where}
+			</if>
+		<![CDATA[
+			group by label
+			order by label asc
+		]]>
+	</select>
+</mapper>

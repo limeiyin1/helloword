@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redfinger.manager.common.mapper.StatSysLoginLogMapper">
+	<resultMap id="BaseResultMap" type="com.redfinger.manager.modules.stat.base.StatDomain">
+		<result column="user_id" jdbcType="INTEGER" property="user_id" />
+		<result column="number" jdbcType="INTEGER" property="number" />
+		<result column="amount" jdbcType="DOUBLE" property="amount" />
+		<result column="label" jdbcType="VARCHAR" property="label" />
+	</resultMap>
+	
+	<!-- 查询登录总人数 -->
+	<select id="selectCount" parameterType="com.redfinger.manager.modules.stat.base.StatDomain" resultMap="BaseResultMap">
+		<![CDATA[
+		select count(1) as number,label as label from(SELECT  distinct  user_id ,to_char(date_trunc('${type}',login_time), '${formart}') as label from sys_login_log  where login_time >=to_date('${begin}','yyyy-MM-DD')  and   login_time < (to_date('${end}','yyyy-MM-DD')+ integer '1') and login_time is not null) t
+		]]> 
+		<if test="where!=null">
+				and ${where}
+			</if>
+		<![CDATA[
+			group by label
+			order by number asc
+		]]>
+	</select>
+	<!--查询pc登录人数  -->
+	<select id="selectCountPc" parameterType="com.redfinger.manager.modules.stat.base.StatDomain" resultMap="BaseResultMap">
+		<![CDATA[
+		select count(1) as number,label as label from(SELECT  distinct  user_id ,to_char(date_trunc('${type}',login_time), '${formart}') as label from sys_login_log  where login_time >=to_date('${begin}','yyyy-MM-DD')  and   login_time < (to_date('${end}','yyyy-MM-DD')+ integer '1') and login_time is not null and client_type='pc') t
+		]]> 
+		<if test="where!=null">
+				and ${where}
+			</if>
+		<![CDATA[
+			group by label
+			order by number asc
+		]]>
+	</select>
+		<!--查询Androuser登录人数  -->
+	<select id="selectCountAndroid" parameterType="com.redfinger.manager.modules.stat.base.StatDomain" resultMap="BaseResultMap">
+		<![CDATA[
+		select count(1) as number,label as label from(SELECT  distinct  user_id ,to_char(date_trunc('${type}',login_time), '${formart}') as label from sys_login_log  where login_time >=to_date('${begin}','yyyy-MM-DD')  and   login_time < (to_date('${end}','yyyy-MM-DD')+ integer '1') and login_time is not null and client_type='androuser_id') t
+		]]> 
+		<if test="where!=null">
+				and ${where}
+			</if>
+		<![CDATA[
+			group by label
+			order by number asc
+		]]>
+	</select>
+	
+			<!--查询没有记录的登录人数  -->
+	<select id="selectCountNull" parameterType="com.redfinger.manager.modules.stat.base.StatDomain" resultMap="BaseResultMap">
+		<![CDATA[
+		select count(1) as number,label as label from(SELECT  distinct  user_id ,to_char(date_trunc('${type}',login_time), '${formart}') as label from sys_login_log  where login_time >=to_date('${begin}','yyyy-MM-DD')  and   login_time < (to_date('${end}','yyyy-MM-DD')+ integer '1') and login_time is not null and client_type='' or client_type is null ) t
+		]]> 
+		<if test="where!=null">
+				and ${where}
+			</if>
+		<![CDATA[
+			group by label
+			order by number asc
+		]]>
+	</select>
+  
+  	<!-- 查询时间段登录设备类型 -->
+	<select id="selectClientType2LoginTime" parameterType="com.redfinger.manager.modules.stat.base.StatDomain" resultMap="BaseResultMap">
+		<![CDATA[
+			SELECT count(1) as number , login_time as label
+			from sys_login_log
+			where 
+			login_time is not NULL 
+			and login_time >= to_date('${begin}','yyyy-MM-DD')
+			and login_time < (to_date('${end}','yyyy-MM-DD')+ integer '1')
+		]]> 
+			<if test="where!=null">
+			and ${where}
+			</if>
+		<![CDATA[
+			group by label
+			order by number asc
+		]]>
+	</select>
+	
+	
+</mapper>

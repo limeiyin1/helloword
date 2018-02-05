@@ -1,0 +1,148 @@
+1. 故障反馈处理流程
+	    a.新建故障反馈工单(save)
+		     aa.新建故障反馈工单有三种方式
+				1)后台新建(故障来源为:win)
+				2)用户新建
+				    若用户的故障反馈工单数量>=5, 则不能新建故障反馈工单
+				3)系统新建(故障来源为:system)
+				
+		b.受理故障反馈工单(accept)
+		      aa.用户只能受理故障状态故障工单状态为: 
+			       1)0(新工单)
+				   2)2(移交客服)
+				   3)3(移交测试)
+				   4)4(移交运维)
+			  bb.故障工单受理完成后, 其故障状态会设置为: 1(处理中)
+			  cc.受理完成后, 设备的故障状态设置为: 1(故障)
+			  dd.设置最后处理人为受理用户
+			  ee.标志故障反馈工单的'是否解决'为:0(未解决)
+			  
+		c.处理故障反馈工单(fix)
+			  aa.只能处理故障反馈工单状态为: 1(处理中)
+              bb.最后处理人(即谁受理的工单就必须由谁处理)必须为当前用户才能对故障工单进行处理
+			  cc.处理流程
+			     处理方式:
+					1)移交客服 || 移交测试
+					    故障反馈工单的故障状态重新设置为:1(处理中), 故障反馈工单流程重新进入b步骤
+					2)移交运维
+					    a1.设置修复类型
+						a2.设置故障修复内容
+						a3.故障反馈工单的故障状态重新设置为:1(处理中), 故障反馈工单流程重新进入b步骤
+					3)已处理
+						a1.设置修复类型
+						a2.设置故障修复内容
+						a3.标志故障反馈工单的'是否解决'为:1(已解决)
+					    a4.故障工单处理完成, 进入故障'处理完毕确认流程'
+			  
+		d.处理完毕确认(reply)
+		      aa.只能确认故障反馈工单状态为:5(已处理)
+			  bb.查询所有故障反馈工单, 如若所有故障反馈工单已经处理完毕, 则把设备的'故障状态'设置为: 0(正常)
+			  cc.设置故障工单反馈状态为:　9(完结)
+			  
+		e.完结
+	
+	
+	
+	
+	
+	
+字段参照:
+
+表:	
+		
+1.rf_fault_feedback(故障反馈表)
+		字段名					数据类型		字段名称			注解
+		fault_feedback_id		int4		故障反馈id			主键
+		class_id				int4		故障类别			外键:参照表rf_class的class_id
+		small_class_id			int4		故障细节	
+		feedback_source			varchar		故障来源	
+		feedback_ip				varchar		来源ip	
+		pad_code				varchar		故障设备编码	
+		feedback_contact		varchar		联系方式	
+		feedback_content		varchar		故障反馈内容	
+		feedback_handle			varchar		故障处理方式	
+		feedback_status			varchar		故障处理状态		参照字典表:sys_dict dict_category: rf_fault_feedback.feedback_status
+																0:新工单 1:处理中 2: 移交客服  3:移交测试  4:移交运维  5:已处理  9:完结			
+		finish_time				timestamp	处理完成时间	
+		status					varchar		状态				参照字典表:sys_dict dict_category: global.enable_status 1:正常0:停用
+		creater					varchar		创建人	
+		create_time				timestamp	创建时间	
+		modifier				varchar		修改人	
+		modife_time				timestamp	修改时间	
+		reorder					int4		排序	
+		remark					varchar		备注	
+		enable_status			varchar		启用状态			启用:1, 禁用: 0
+		user_id_tmp				varchar		会员帐号	
+		feedback_qq				varchar		qq号码	
+		promoter				varchar		咨询人	
+		last_handler			varchar		最后处理人	
+		batch_number			int4		批次号	
+		pad_id					int4		设备id	
+		user_id					int4		用户id	
+		client_source			varchar		客户端来源			win, ios, system, android
+		operate_type			varchr		操作类型			1:后台操作, 2:app操作3 .定时器操作 4:新增工单
+
+
+2.rf_fault_handle(故障处理表)
+		字段名					数据类型		长度			字段名称				注解
+		fault_handle_id			int4			32		故障反馈处理ID			permary key
+		admin_user_id			varchar			50		管理员id	
+		fault_feedback_id		int4			32		故障反馈id				外键,参照表rf_fault_feedback,参照栏位:fault_feedback_id
+		is_solve				varchar			8		是否解决	
+		status					varchar			8		状态					参照字典表:sys_dict dict_category: global.enable_status
+																				1:正常  0:停用
+		creater					varchar			50		创建人	
+		create_time				timestamp		6		创建时间	
+		mofifier				varchar			50		修改人	
+		modify_time				timestamp		6		修改时间	
+		reorder					int4			32		排序	
+		remark					varchar			500		备注	
+		enable-status			varchar			8		启用状态				启用:1, 禁用:0
+
+3.rf_pad(设备表)
+		字段名						数据类型			长度		字段名称			注解
+		pad_id						int4			32		设备ID			permary key
+		pad_code					varchar			25		设备编码	
+		batch_number				int4			32		批次号	
+		pad_name					varchar			50		设备名称	
+		pad_ip						varchar			32		设备IP	
+		pad_control_port			int4			32		设备控制端口	
+		pad_manage_port				int4			32		设备管理端口	
+		idc_id						int4			32		机房ID	
+		pad_control_id				int4			32		设备控制节点ID	
+		pad_manage_control_id		int4			32		设备管理控制节点ID	
+		user_control_id				int4			32		用户控制节点ID	
+		pad_video_id				int4			32		设备视频ID	
+		user_video_id				int4			32		用户视频ID	
+		pad_status					varchar			8		设备状态 			在线 离线 控制
+		user_pad_status				varchar			8		用户设备状态		在线 离线
+		fault_status				varchar			8		故障状态	
+		bind_status					varchar			8		绑定状态			绑定、未绑定
+		status						varchar			8		状态	
+		creater						varchar			50		创建人	
+		create_time					timestamp		6		创建时间	
+		modifier					varchar			50		修改人	
+		modify_time					timestamp		6		修改时间	
+		reorder						int4			32		排序	
+		remark						varchar			500		备注	
+		remote_version				varchar			50		设备内程序版本号	
+		enable_status				varchar			8		启用状态			1:启用、0:禁用
+		active_status				varchar			50		冻结状态	
+		version_code				varchar			30		设备内启动器版本号	
+		pad_sn						varchar			25		虚拟节点序号	
+		device_id					int4			32		物理设备ID	
+		vm_status					varchar			8		虚拟机状态			在线 离线
+		vm_mac						varchar			32		虚拟机MAC地址	
+		grant_open_status			varchar			8		授权启动状态	
+		maint_status				varchar			8		设备维护状态	
+		recover_status				varchar			8		回收状态			0：回收失败，1：回收成功
+		recover_info				varchar			500		回收信息	
+		task_id						int4			32		任务id	
+		pad_type					varchar			10		设备类型			android、ios
+		pad_source					varchar			30		设备来源			redfinger、baidu
+		is_push_baidu				varchar			1		1是0否、为空也是没有	
+		rom_version					varchar			20		设备rom版本号	
+		imei						varchar			50		设备imei	
+		pad_classify				varchar			8		设备类别			1主营设备、2游戏设备
+
+

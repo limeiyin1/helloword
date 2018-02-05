@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<decorators defaultdir="/WEB-INF/layouts/">
+	
+	<!-- 默认装饰页面, 在需要装饰的页面增加<meta name="decorator" content="default"/> -->
+	<decorator name="moduleIndex" page="moduleIndex.jsp" />
+	<decorator name="login" page="login.jsp" />
+	<decorator name="layout" page="layout.jsp" />
+	<decorator name="menu" page="menu.jsp" />
+	<decorator name="stat" page="stat.jsp" />
+	
+	
+</decorators>

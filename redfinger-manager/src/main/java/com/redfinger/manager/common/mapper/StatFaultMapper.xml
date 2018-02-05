@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redfinger.manager.common.mapper.StatFaultMapper">
+	<resultMap id="BaseResultMap" type="com.redfinger.manager.modules.stat.base.StatDomain">
+		<result column="id" jdbcType="INTEGER" property="id" />
+		<result column="number" jdbcType="INTEGER" property="number" />
+		<result column="amount" jdbcType="DOUBLE" property="amount" />
+		<result column="label" jdbcType="VARCHAR" property="label" />
+	</resultMap>
+	
+	<select id="statFaultCategory" parameterType="com.redfinger.manager.modules.stat.base.StatDomain" resultMap="BaseResultMap">
+		<![CDATA[
+			SELECT count(1) as number,class_id as label
+			from rf_fault_feedback
+			where create_time >= to_date('${begin}','yyyy-MM-DD') 
+			and create_time < (to_date('${end}','yyyy-MM-DD')+ integer '1') 
+		]]> 
+			<if test="where!=null">
+				and ${where}
+			</if>
+		<![CDATA[
+			group by label
+			order by number asc
+		]]>
+	</select>
+	
+	<select id="statFaultCategoryFix" parameterType="com.redfinger.manager.modules.stat.base.StatDomain" resultMap="BaseResultMap">
+		<![CDATA[
+			SELECT count(1) as number,small_class_id as label
+			from rf_fault_feedback
+			where create_time >= to_date('${begin}','yyyy-MM-DD') 
+			and create_time < (to_date('${end}','yyyy-MM-DD')+ integer '1') 
+			and feedback_status in ('5','9')
+		]]> 
+			<if test="where!=null">
+				and ${where}
+			</if>
+		<![CDATA[
+			group by label
+			order by number asc
+		]]>
+	</select>
+	
+	<select id="statFaultAcceptByRole" parameterType="com.redfinger.manager.modules.stat.base.StatDomain" resultMap="BaseResultMap">
+		<![CDATA[
+			SELECT count(1) as number,admin_user_id as label
+			from rf_fault_handle
+			where create_time >= to_date('${begin}','yyyy-MM-DD') 
+			and create_time < (to_date('${end}','yyyy-MM-DD')+ integer '1') 
+		]]> 
+			<if test="where!=null">
+				and ${where}
+			</if>
+		<![CDATA[
+			group by label
+			order by number desc
+		]]>
+	</select>
+	
+	<select id="statFualtSolveByRole" parameterType="com.redfinger.manager.modules.stat.base.StatDomain" resultMap="BaseResultMap">
+		<![CDATA[
+			select count(1) as number,admin_user_id as label 
+			from rf_fault_handle
+			where create_time >= to_date('${begin}','yyyy-MM-DD') 
+			and create_time < (to_date('${end}','yyyy-MM-DD')+ integer '1') 
+		]]> 
+		<if test="where!=null">
+			and ${where}
+		</if>
+		<![CDATA[
+			group by label
+			order by number desc
+		]]>
+	</select>
+	
+	<select id="statFualtFixTimeByRole" parameterType="com.redfinger.manager.modules.stat.base.StatDomain" resultMap="BaseResultMap">
+		<![CDATA[
+			select CEIL(EXTRACT( EPOCH FROM ((SUM(diff)/count(1))))/60) as number,admin_user_id as label from 
+			(
+				select admin_user_id,modify_time-create_time as diff 
+				from  rf_fault_handle 
+				where is_solve='1' 
+				and modify_time is not null
+				and create_time >= to_date('${begin}','yyyy-MM-DD') 
+				and create_time < (to_date('${end}','yyyy-MM-DD')+ integer '1')
+				]]> 
+				<if test="where!=null">
+					and ${where}
+				</if>
+				<![CDATA[
+			) t 
+			group by label
+		]]>
+	</select>
+	
+</mapper>
