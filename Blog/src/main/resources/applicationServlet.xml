@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context
+		http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/util 
+		http://www.springframework.org/schema/util/spring-util.xsd
+		http://www.springframework.org/schema/tx 
+		http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+		http://www.springframework.org/schema/mvc
+		http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+	<util:properties id="jdbc" location="classpath:db.properties" />
+
+
+<bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<property name="maxUploadSize" value="104857600" />
+		<property name="maxInMemorySize" value="4096" />
+		<property name="defaultEncoding" value="UTF-8"></property>
+	</bean>
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="#{jdbc.driver}" />
+		<property name="url" value="#{jdbc.url}" />
+		<property name="username" value="#{jdbc.username}" />
+		<property name="password" value="#{jdbc.password}" />
+		<!-- 从数据源中返回的连接是否采用自动提交机制 -->
+		<property name="defaultAutoCommit" value="true" />
+		<!-- 是否仅能执行只读操作 -->
+		<property name="defaultReadOnly" value="false" />
+		<!-- 初始化数据库连接数 -->
+		<property name="initialSize" value="0" />
+
+		<!-- 最大连接数据库连接数，设置为0时，表示没有限制 -->
+		<property name="maxActive" value="10" />
+		<!-- 最大等待连接中的数量，设置为0时，表示没有限制 -->
+		<property name="maxIdle" value="1" />
+		<!-- 最大等待秒数，单位为毫秒 -->
+		<property name="maxWait" value="6000" />
+		<property name="testWhileIdle" value="true" />
+		<property name="timeBetweenEvictionRunsMillis" value="60000" />
+		<property name="numTestsPerEvictionRun" value="1" />
+		<property name="validationQuery" value="select 1" />
+	</bean>
+
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="configLocation" value="classpath:MyBatis.xml" />
+		<property name="mapperLocations" value="classpath:mapper/*.xml" />
+	</bean>
+
+	<!-- mybatis.spring自动映射，DAO接口所在包名，Spring会自动查找其下的类 -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<!-- <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory“/> -->
+		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+		<property name="basePackage" value="com.red.Dao" />
+	</bean>
+	<!-- 事务管理 -->
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	
+	<!-- 开启事务控制的注解支持 -->
+	<tx:annotation-driven transaction-manager="transactionManager" />
+
+	<!-- 默认扫描的包路径 -->
+	<context:component-scan base-package="com.red" />
+	<!-- 视图解析器 -->
+<!-- 	<bean
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/WEB-INF/view/" />
+		<property name="suffix" value=".jsp" />
+	</bean> -->
+</beans>
