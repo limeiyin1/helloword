@@ -5,18 +5,18 @@
 <title>Insert title here</title>
 <link rel="stylesheet" href="../css/bootstrap.min.css">
 <link rel="stylesheet" href="../css/font-awesome.min.css">
-    <style type="text/css">
-	body {
-	background-image:url(img/1.jpg);
-	background-size:cover;
-	padding: 0;  
-    margin: 0;  
-    height: 100%;
-    overflow:hidden;  
-	}	
+<style type="text/css">
+body {
+	background-image: url(img/1.jpg);
+	background-size: cover;
+	padding: 0;
+	margin: 0;
+	height: 100%;
+	overflow: hidden;
+}
+
 #box {
 	position: absolute;
-	
 	left: 50%;
 	margin-left: -400px;
 	top: 50%;
@@ -24,30 +24,75 @@
 	width: 500px;
 	height: 1200px;
 	width: 1200px;
-	border:3px solid gray;
+	border: 3px solid gray;
 	text-align: center;
 }
 </style>
+<script type="text/javascript"
+	src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.0.js"></script>
 </head>
-<body >        
-					
-<form action="">
-	<div id="box">
-					<div  style="margin-top: 200px;" ><span style="text-align: center; font-size:100px; color:#5B5B5B">个人博客系统</span></div>	
-					<div style="margin-top: 100px;">
-						<input style="width:600px;height:80px;"name="password"  type="text" placeholder="请输入账号">
-					</div>
-					<div style="margin:30px;">
-						<input style="width:600px;height:80px;"name="password"  type="text" placeholder="请输入密码">
-					</div>
-					<div style="margin:30px;">
-						<input type="submit" value="登录" style="color:#5B5B5B;margin:25px;width:150px;height:80px;">
-						<input type="submit" value="注册" style="color:#5B5B5B;margin:25px;width:150px;height:80px;">
-					</div>
-						
+<body>
 
-	</div>
+	<form action="">
+		<div id="box">
+			<div style="margin-top: 200px;">
+				<span style="text-align: center; font-size: 100px; color: #5B5B5B">个人博客系统</span>
+			</div>
+			<div style="margin-top: 100px;">
+				<input id="username" style="width: 600px; height: 80px;"
+					name="username" type="text" placeholder="请输入账号"> <span id="username_span"></span>
+			</div>
+			<div style="margin: 30px;">
+				<input id="password" style="width: 600px; height: 80px;"
+					name="password" type="text" placeholder="请输入密码">  <span id="pwd_span"></span>
+			</div>
+			<div style="margin: 30px;">
+				<input id="login1" type="submit" value="登录"
+					style="color: #5B5B5B; margin: 25px; width: 150px; height: 80px;">
+				<input type="submit" value="注册"
+					style="color: #5B5B5B; margin: 25px; width: 150px; height: 80px;">
+			</div>
 
-</form>
+
+		</div>
+	</form>
+	<script type="text/javascript">
+		$(function() {
+			$("#login").click(goLogin);
+		});
+		function goLogin() {
+			var username = $("#username").val().trim();
+			var password = $("#password").val().trim();
+			$("#username_span").html("");
+			$("#pwd_span").html("");
+			var ok = true;
+			if (username == "") {
+				$("#username_span").html("请输入账号");
+				ok = false;
+			}
+			if (password == "") {
+				$("#pwd_span").html("请输入密码");
+				ok = false;
+			}
+			if (ok) {
+				$.ajax({
+					type : "post",
+					url : "/user/login",
+					data : {
+						"username" : username,
+						"password" : password
+					},
+					success : success,
+					dataType : "json",
+					success : function(result) {
+						alert("1111111");
+					},
+					error : function(result) {
+						alert("登录异常");
+					}
+				})
+			}
+		}
+	</script>
 </body>
 </html>
