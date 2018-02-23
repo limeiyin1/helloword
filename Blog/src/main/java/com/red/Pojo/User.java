@@ -5,6 +5,7 @@ private int id;
 private String username;
 private String password;
 private String phone;
+private String idCard;
 private boolean sex;//0表示男  1表示女
 private String chmod;
 public int getId() {
