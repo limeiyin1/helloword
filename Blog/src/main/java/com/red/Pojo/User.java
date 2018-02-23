@@ -67,5 +67,13 @@ public void setWeight(Double weight) {
 	this.weight = weight;
 }
 
+public String getAge() {
+	return age;
+}
+
+public void setAge(String age) {
+	this.age = age;
+}
+
 
 }
