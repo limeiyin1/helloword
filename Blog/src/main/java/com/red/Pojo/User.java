@@ -4,6 +4,7 @@ public class User {
 private int id;
 private String username;
 private String password;
+private String idCard;
 private String phone;
 private boolean sex;//0表示男  1表示女
 private String chmod;
