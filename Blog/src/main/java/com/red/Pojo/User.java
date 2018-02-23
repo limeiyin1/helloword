@@ -50,5 +50,21 @@ public void setChmod(String chmod) {
 	this.chmod = chmod;
 }
 
+public String getIdCard() {
+	return idCard;
+}
+
+public Double getWeight() {
+	return weight;
+}
+
+public void setIdCard(String idCard) {
+	this.idCard = idCard;
+}
+
+public void setWeight(Double weight) {
+	this.weight = weight;
+}
+
 
 }
