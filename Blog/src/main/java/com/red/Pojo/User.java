@@ -4,9 +4,7 @@ public class User {
 private int id;
 private String username;
 private String password;
-private String idCard;
 private String age;
-private Double weight;
 private String phone;
 private boolean sex;//0表示男  1表示女
 private String chmod;
@@ -49,22 +47,6 @@ public void setSex(boolean sex) {
 }
 public void setChmod(String chmod) {
 	this.chmod = chmod;
-}
-
-public String getIdCard() {
-	return idCard;
-}
-
-public Double getWeight() {
-	return weight;
-}
-
-public void setIdCard(String idCard) {
-	this.idCard = idCard;
-}
-
-public void setWeight(Double weight) {
-	this.weight = weight;
 }
 
 public String getAge() {
