@@ -4,6 +4,7 @@ public class User {
 private int id;
 private String username;
 private String password;
+private String age;
 private String phone;
 private boolean sex;//0表示男  1表示女
 private String chmod;
@@ -46,6 +47,14 @@ public void setSex(boolean sex) {
 }
 public void setChmod(String chmod) {
 	this.chmod = chmod;
+}
+
+public String getAge() {
+	return age;
+}
+
+public void setAge(String age) {
+	this.age = age;
 }
 
 
