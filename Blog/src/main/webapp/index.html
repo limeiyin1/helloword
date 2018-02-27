@@ -40,17 +40,23 @@ body {
 			</div>
 			<div style="margin-top: 100px;">
 				<input id="username" style="width: 600px; height: 80px;"
-					name="username" type="text" placeholder="请输入账号"> <span id="username_span"></span>
+					name="username" type="text" placeholder="请输入账号">
+			</div>
+			<div>
+				<span id="username_span"></span>
 			</div>
 			<div style="margin: 30px;">
 				<input id="password" style="width: 600px; height: 80px;"
-					name="password" type="text" placeholder="请输入密码">  <span id="pwd_span"></span>
+					name="password" type="text" placeholder="请输入密码">
+			</div>
+			<div>
+				<span id="pwd_span"></span>
 			</div>
 			<div style="margin: 30px;">
 				<input id="login" type="submit" value="登录"
 					style="color: #5B5B5B; margin: 25px; width: 150px; height: 80px;">
-				<input type="submit" value="注册"
-					style="color: #5B5B5B; margin: 25px; width: 150px; height: 80px;">
+				<a href="user/regist.action"
+					style="color: #5B5B5B; margin: 25px; width: 150px; height: 80px;">注册</a>
 			</div>
 
 
@@ -65,24 +71,23 @@ body {
 			var password = $("#password").val().trim();
 			$("#username_span").html("");
 			$("#pwd_span").html("");
-			var ok = true;
+			var ok=true;
 			if (username == "") {
 				$("#username_span").html("请输入账号");
-				ok = false;
+				ok=false;
 			}
-			if (password == "") {
+			else if (password == "") {
 				$("#pwd_span").html("请输入密码");
-				ok = false;
+				ok=false;
 			}
 			if (ok) {
 				$.ajax({
+					url : "/user/login.action",
 					type : "post",
-					url : "/user/login",
 					data : {
 						"username" : username,
 						"password" : password
 					},
-					success : success,
 					dataType : "json",
 					success : function(result) {
 						alert("1111111");

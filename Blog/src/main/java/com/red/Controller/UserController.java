@@ -1,5 +1,6 @@
 package com.red.Controller;
 
+
 import javax.annotation.Resource;
 
 import org.apache.commons.codec.digest.DigestUtils;
@@ -17,7 +18,7 @@ public class UserController {
 	@Resource
 	private UserService userService;
 
-	@RequestMapping("/login")
+	@RequestMapping("/regist")
 	@ResponseBody
 	public Result regist(User user) {
 		Result result = null;
@@ -33,8 +34,10 @@ public class UserController {
 			return result;
 		}
 	}
-
+	@ResponseBody
+	@RequestMapping("/login.action")
 	public Result login(User user) {
+		System.out.println(user.getUsername()+"++++++++++++++++++++++++");
 		Result result = null;
 		User user2 = userService.selectByUsername(user.getUsername());
 		if(user2==null) {
@@ -46,10 +49,14 @@ public class UserController {
 			if (user2.getPassword().equals(md5Hex)) {
 				result.setStatus(200);
 				result.setMessage("登录成功");
-				
 			}
 		}
-
+		System.out.println(result);
 		return result;
+	}
+	@RequestMapping("/regist.action")
+	public String Regist() {
+		
+		return "regist";
 	}
 }
